@@ -13,6 +13,7 @@
     'depends': ['stock'],
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'data/label_template.xml',
         'data/stowage_label_template.xml',
         'data/single_label_template.xml',
