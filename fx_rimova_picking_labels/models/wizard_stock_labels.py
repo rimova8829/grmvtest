@@ -77,7 +77,7 @@ class WizardStowageLabels(models.TransientModel):
         return act
 
     def _process_qa_labels(self, picking_id):
-        "qa_initials = picking_id.check_ids.mapped('user_id.name')
+        qa_initials = picking_id.check_ids.mapped('user_id.name')
         if not len(qa_initials):
             qa_initials = ''
         else:
