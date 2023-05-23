@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Base fix",
-    'summary': "QA Picking Labels",
+    'name': "Picking Labels",
+    'summary': "Picking Labels",
     'description': """QA picking labels""",
 
     'author': "FIXDOO SOLUTIONS",
