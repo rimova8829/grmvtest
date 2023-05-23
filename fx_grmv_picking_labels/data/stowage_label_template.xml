@@ -90,7 +90,7 @@
         model="stock.picking"
         string="Etiqueta estibo"
         report_type="qweb-pdf"
-        name="fx_qa_picking_labels.stowage_picking_label_template"
-        file="fx_qa_picking_labels.stowage_picking_label_template"/>
+        name="fx_grmv_picking_labels.stowage_picking_label_template"
+        file="fx_grmv_picking_labels.stowage_picking_label_template"/>
 
 </odoo>
