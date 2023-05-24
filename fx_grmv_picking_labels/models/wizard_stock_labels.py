@@ -39,7 +39,7 @@ class WizardStowageLabels(models.TransientModel):
             qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
             qa_initials = '.'.join(qa_initials)
 
-        mrp_prod_id = MrpProd.search([('name', '=', picking_id.origin)])
+        mrp_prod_id = MrpProd.search([('name', 'ilike', f'{picking_id.origin}%%')])
         if not len(mrp_prod_id):
             raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
         mo_date = mrp_prod_id[0].date_finished.strftime('%d/%m/%Y')
@@ -116,7 +116,7 @@ class WizardStowageLabels(models.TransientModel):
             qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
             qa_initials = '.'.join(qa_initials)
 
-        mrp_prod_id = MrpProd.search([('name', '=', picking_id.origin)])
+        mrp_prod_id = MrpProd.search([('name', 'ilike', f'{picking_id.origin}%%')])
         if not len(mrp_prod_id):
             raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
         mo_date = mrp_prod_id[0].date_finished.strftime('%d/%m/%Y')
