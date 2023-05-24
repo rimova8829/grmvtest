@@ -72,7 +72,7 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.stowage_labels_printed = True
 
-        act = self.env.ref('fx_qa_picking_labels.stowage_stock_label').report_action(self)
+        act = self.env.ref('fx_grmv_picking_labels.stowage_stock_label').report_action(self)
         act['data'] = {'lines' : lines}
         return act
 
@@ -99,7 +99,7 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.qa_labels_printed = True
 
-        act = self.env.ref('fx_qa_picking_labels.qa_stock_label').report_action(self)
+        act = self.env.ref('fx_grmv_picking_labels.qa_stock_label').report_action(self)
         act['data'] = {'lines' : lines}
         return act
     
@@ -146,7 +146,7 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.single_labels_printed = True
 
-        act = self.env.ref('fx_qa_picking_labels.stock_single_label').report_action(self)
+        act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
         act['data'] = {'lines' : lines}
         return act
 
