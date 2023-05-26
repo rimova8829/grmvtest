@@ -22,6 +22,12 @@ class WizardStowageLabels(models.TransientModel):
 
         # calcular num de etiquetas = total_piezas / piezas_tarima
         total_qty = sum(picking_id.move_line_ids_without_package.mapped('qty_done'))
+        total_qty = int(total_qty)
+        if self.platform_qty > total_qty:
+            raise UserError(
+                'Indique una cantidad menor o igual al total de piezas del traslado'
+            )
+
         label_qty = int(total_qty / self.platform_qty)
         if total_qty % self.platform_qty != 0:
             label_qty += 1 # agregar una etiqueta para piezas residuales
@@ -58,10 +64,15 @@ class WizardStowageLabels(models.TransientModel):
         
         lines = []
         for idx in range(1, label_qty + 1):
+            # cantidad disponible disminuye con cada etiqueta
+            total_qty -= self.platform_qty
+            # al tener division inexacta el total pasa a negativo
+            label_qty = abs(total_qty) if total_qty < 0 else self.platform_qty
+            
             lines.append({
                 'pn' : product_name,
                 'mo' : picking_id.origin,
-                'qty' : self.platform_qty,
+                'qty' : f'{label_qty} de {total_qty}',
                 'lot' : lot_names,#'LOTE',
                 'qa' : qa_initials,#'INICIALES',
                 'location_dest' : storage_location,#'ALMACENAMIENTO',

@@ -6,74 +6,74 @@
           <t t-set="data_report_header_spacing" t-value="1"/>
             <t t-foreach="lines" t-as="line">
               <div class="page">
-                    <table style="width: 48mm; height: 38mm; text-align:left; border: 1px solid black; padding-left: 0px">
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>P/N:</span>
-                                <span t-esc="line['pn']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>PO:</span>
-                                <span t-esc="line['mo']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Cantidad:</span>
-                                <span t-esc="1"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Lote:</span>
-                                <span t-esc="line['lot']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Liberado por:</span>
-                                <span t-esc="line['qa']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Ubicación destino:</span>
-                                <span t-esc="line['storage_location']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Fecha fabricación:</span>
-                                <span t-esc="line['mo_date']"/>
-                              </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                              <div class="row">
-                                <span>Conteo:</span>
-                                <span t-esc="line['count']"/>
-                              </div>
-                            </td>
-                        </tr>
-                    </table>
-                    <p style="page-break-before:always;"> </p>
-                </div>
+                  <table style="width: 48mm; height: 38mm; text-align:left; border: 1px solid black; padding-left: 0px;font-size:5px">
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>P/N:</span>
+                              <span t-esc="line['pn']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>PO:</span>
+                              <span t-esc="line['mo']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Cantidad:</span>
+                              <span t-esc="1"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Lote:</span>
+                              <span t-esc="line['lot']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Liberado por:</span>
+                              <span t-esc="line['qa']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Ubicación destino:</span>
+                              <span t-esc="line['storage_location']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Fecha fabricación:</span>
+                              <span t-esc="line['mo_date']"/>
+                            </div>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td>
+                            <div class="row">
+                              <span>Conteo:</span>
+                              <span t-esc="line['count']"/>
+                            </div>
+                          </td>
+                      </tr>
+                  </table>
+                  <p style="page-break-before:always;"> </p>
+              </div>
             </t>    
         </t>
     </template>
