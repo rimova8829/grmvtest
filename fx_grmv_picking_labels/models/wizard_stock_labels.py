@@ -28,9 +28,9 @@ class WizardStowageLabels(models.TransientModel):
                 'Indique una cantidad menor o igual al total de piezas del traslado'
             )
 
-        label_qty = int(total_qty / self.platform_qty)
+        pages_qty = int(total_qty / self.platform_qty)
         if total_qty % self.platform_qty != 0:
-            label_qty += 1 # agregar una etiqueta para piezas residuales
+            pages_qty += 1 # agregar una etiqueta para piezas residuales
 
         # valores para las etiquetas
         MrpProd = self.env['mrp.production']
@@ -64,7 +64,7 @@ class WizardStowageLabels(models.TransientModel):
         
         lines = []
         label_qty = total_qty
-        for idx in range(1, label_qty + 1):
+        for idx in range(1, pages_qty + 1):
             # cantidad disponible disminuye con cada etiqueta
             label_qty -= (self.platform_qty * idx)
             if label_qty < 0:
@@ -83,7 +83,7 @@ class WizardStowageLabels(models.TransientModel):
                 'location_dest' : storage_location,#'ALMACENAMIENTO',
                 'mo_date' : mo_date,#'FECHA MO',
                 'pick_date' : pick_date,
-                'count' : f'{idx} de {label_qty}'
+                'count' : f'{idx} de {pages_qty}'
             })
             label_qty = total_qty
 
