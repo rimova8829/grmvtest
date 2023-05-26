@@ -69,7 +69,7 @@ class WizardStowageLabels(models.TransientModel):
             label_qty -= (self.platform_qty * idx)
             if label_qty < 0:
                 # al tener division inexacta el total pasa a negativo
-                label_qty = total_qty - self.platform_qty
+                label_qty = total_qty - (self.platform_qty * idx)
             else:
                 # si no, tomar cantidad definida por usuario
                 label_qty = self.platform_qty
