@@ -29,7 +29,8 @@ class WizardStowageLabels(models.TransientModel):
             )
 
         pages_qty = int(total_qty / self.platform_qty)
-        if total_qty % self.platform_qty != 0:
+        pages_qty_module = total_qty % self.platform_qty
+        if pages_qty_module != 0:
             pages_qty += 1 # agregar una etiqueta para piezas residuales
 
         # valores para las etiquetas
@@ -65,14 +66,11 @@ class WizardStowageLabels(models.TransientModel):
         lines = []
         label_qty = total_qty
         for idx in range(1, pages_qty + 1):
+            label_qty = self.platform_qty
             # cantidad disponible disminuye con cada etiqueta
-            label_qty -= (self.platform_qty * idx)
-            if label_qty < 0:
-                # al tener division inexacta el total pasa a negativo
-                label_qty = total_qty - (self.platform_qty * idx)
-            else:
-                # si no, tomar cantidad definida por usuario
-                label_qty = self.platform_qty
+            if pages_qty_module != 0 and idx == pages_qty:
+                # la etiqueta residual contiene menos piezas que las demas
+                label_qty = total_qty - (self.platform_qty * (idx - 1))
 
             lines.append({
                 'pn' : product_name,
