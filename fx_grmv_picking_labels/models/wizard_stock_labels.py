@@ -63,12 +63,17 @@ class WizardStowageLabels(models.TransientModel):
             .mapped('product_id.display_name')[0]
         
         lines = []
+        label_qty = total_qty
         for idx in range(1, label_qty + 1):
             # cantidad disponible disminuye con cada etiqueta
-            total_qty -= self.platform_qty
-            # al tener division inexacta el total pasa a negativo
-            label_qty = abs(total_qty) if total_qty < 0 else self.platform_qty
-            
+            label_qty -= (self.platform_qty * idx)
+            if label_qty < 0:
+                # al tener division inexacta el total pasa a negativo
+                label_qty = abs(label_qty)
+            else:
+                # si no, tomar cantidad definida por usuario
+                label_qty = self.platform_qty
+
             lines.append({
                 'pn' : product_name,
                 'mo' : picking_id.origin,
@@ -80,6 +85,7 @@ class WizardStowageLabels(models.TransientModel):
                 'pick_date' : pick_date,
                 'count' : f'{idx} de {label_qty}'
             })
+            label_qty = total_qty
 
         picking_id.stowage_labels_printed = True
 
