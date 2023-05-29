@@ -41,7 +41,7 @@ class WizardStowageLabels(models.TransientModel):
 
             report_from_action = self.env.ref(report_name)
             data = {'data': {'lines' : list_ids}}
-            result, format = report_from_action._render_qweb_pdf(picking_id, data=data)
+            result, format = report_from_action._render_qweb_pdf(picking_id, {'lines' : list_ids})
 
             # # TODO in trunk, change return format to binary to match message_post expected format
             result = base64.b64encode(result)
@@ -174,7 +174,7 @@ class WizardStowageLabels(models.TransientModel):
 
         if sublist and sublist not in list_records:
             list_records.append(sublist)
-            
+
         picking_id.stowage_labels_printed = True
 
         #
