@@ -49,7 +49,10 @@ class WizardStowageLabels(models.TransientModel):
         mrp_prod_id = MrpProd.search([('name', 'ilike', f'{picking_id.origin}%%')])
         if not len(mrp_prod_id):
             raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
-        mo_date = mrp_prod_id[0].date_finished.strftime('%d/%m/%Y')
+        
+        date_finished = mrp_prod_id[0].date_finished
+        mo_date = date_finished.strftime('%d/%m/%Y') if date_finished else ""
+
         
         storage_location = picking_id.move_line_ids_without_package\
             .mapped('product_id.putaway_rule_ids')
