@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 from odoo import fields, models, api
 from odoo.exceptions import UserError
+import base64
 
 class WizardStowageLabelsFile(models.TransientModel):
     _name = 'wizard.stowage.labels.file'
@@ -22,7 +23,59 @@ class WizardStowageLabels(models.TransientModel):
         string='Etiqueta a imprimir', default='single'
     )
 
-    report_files = fields.One2many('wizard.stowage.labels.file', 'wizard_id', 'Archivos')
+    split_labels = fields.Boolean('Dividir PDF', default=True)
+    reports_file_ok = fields.Boolean('Archivos Listos')
+    report_file_ids = fields.One2many('wizard.stowage.labels.file', 'wizard_id', 'Archivos')
+
+    def generate_labels_adjunts(self, list_records, report_name):
+        xbinary_lines = []
+        attachment_obj = self.env['ir.attachment'].sudo()
+        wizard_binary_obj = self.env['wizard.stowage.labels.file']
+        count = 1
+        for list_ids in list_records:
+            if count < 10:
+                count_str = '0'+str(count)
+            else:
+                count_str = str(count)
+            file_name = "Etiqueta %s" % count_str
+
+            report_from_action = self.env.ref(report_name)
+            report_from_action['data'] = {'lines' : list_ids}
+            result, format = report_from_action._render_qweb_pdf(list_ids)
+
+            # # TODO in trunk, change return format to binary to match message_post expected format
+            result = base64.b64encode(result)
+            
+            attachment_pdf_name = file_name+'.pdf'
+
+            data_attach_pdf = {
+                                    'binary_file'       : result,
+                                    'binary_file_name' : attachment_pdf_name,
+                               }
+
+            xline = (0,0,data_attach_pdf)
+            xbinary_lines.append(xline)
+            count += 1
+        self.reports_file_ok = True
+        self.report_file_ids = xbinary_lines
+
+        self.onchange_label_type()
+        label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
+        label = map(lambda item: item[1], label)
+        msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
+        picking_id.message_post(body=msg)
+
+        return {
+            'name': _('Etiquetas'),
+            'view_mode': 'form',
+            'view_id': self.env.ref('fx_grmv_picking_labels.stowage_labels_form').id,
+            'res_model': 'wizard.stowage.labels',
+            'context': "{}", # self.env.context
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+        }
+                
+
     def _process_stowage_labels(self, picking_id):
         if self.platform_qty < 1:
             raise UserError('Indique un número de etiquetas mayor que cero')
@@ -75,6 +128,9 @@ class WizardStowageLabels(models.TransientModel):
         
         lines = []
         label_qty = total_qty
+        list_records = []
+        sublist = []
+        count_l = 1
         for idx in range(1, pages_qty + 1):
             label_qty = self.platform_qty
             # cantidad disponible disminuye con cada etiqueta
@@ -82,24 +138,37 @@ class WizardStowageLabels(models.TransientModel):
                 # la etiqueta residual contiene menos piezas que las demas
                 label_qty = total_qty - (self.platform_qty * (idx - 1))
 
-            lines.append({
-                'pn' : product_name,
-                'mo' : picking_id.origin,
-                'qty' : f'{label_qty} de {total_qty}',
-                'lot' : lot_names,#'LOTE',
-                'qa' : qa_initials,#'INICIALES',
-                'location_dest' : storage_location,#'ALMACENAMIENTO',
-                'mo_date' : mo_date,#'FECHA MO',
-                'pick_date' : pick_date,
-                'count' : f'{idx} de {pages_qty}'
-            })
+            xvals = {
+                        'pn' : product_name,
+                        'mo' : picking_id.origin,
+                        'qty' : f'{label_qty} de {total_qty}',
+                        'lot' : lot_names,#'LOTE',
+                        'qa' : qa_initials,#'INICIALES',
+                        'location_dest' : storage_location,#'ALMACENAMIENTO',
+                        'mo_date' : mo_date,#'FECHA MO',
+                        'pick_date' : pick_date,
+                        'count' : f'{idx} de {pages_qty}'
+                    }
+            lines.append(xvals)
+            if count_l <= 800:
+                sublist.append(xvals)
+                count_l += 1
+            else:
+                list_records.append(sublist)
+                sublist = [xvals]
+                count_l = 1
             label_qty = total_qty
 
         picking_id.stowage_labels_printed = True
 
-        act = self.env.ref('fx_grmv_picking_labels.stowage_stock_label').report_action(self)
-        act['data'] = {'lines' : lines}
-        return act
+        #
+        #
+        if self.split_labels:
+            self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label')
+        else:
+            act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(self)
+            act['data'] = {'lines' : lines}
+            return act
 
     def _process_qa_labels(self, picking_id):
         qa_initials = picking_id.check_ids.mapped('user_id.name')
@@ -112,21 +181,34 @@ class WizardStowageLabels(models.TransientModel):
         location_dest = picking_id.location_id.display_name
 
         lines = []
+        list_records = []
+        sublist = []
+        count_l = 1
         for ln in picking_id.move_line_ids_without_package:
-            lines.append({
-                'pn' : ln.product_id.display_name,
-                'mo' : picking_id.origin,
-                'qty' : '%0.2f' % ln.qty_done,
-                'lot' : ln.lot_id.display_name,#'LOTE',
-                'qa' : qa_initials,#'INICIALES',
-                'location_dest' :  location_dest
-            })
+            xvals = {
+                        'pn' : ln.product_id.display_name,
+                        'mo' : picking_id.origin,
+                        'qty' : '%0.2f' % ln.qty_done,
+                        'lot' : ln.lot_id.display_name,#'LOTE',
+                        'qa' : qa_initials,#'INICIALES',
+                        'location_dest' :  location_dest
+                    }
+            lines.append(xvals)
+            if count_l <= 800:
+                sublist.append(xvals)
+                count_l += 1
+            else:
+                list_records.append(sublist)
+                sublist = [xvals]
+                count_l = 1
 
         picking_id.qa_labels_printed = True
-
-        act = self.env.ref('fx_grmv_picking_labels.qa_stock_label').report_action(self)
-        act['data'] = {'lines' : lines}
-        return act
+        if self.split_labels:
+            self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label')
+        else:
+            act = self.env.ref(list_records, 'fx_grmv_picking_labels.qa_stock_label').report_action(self)
+            act['data'] = {'lines' : lines}
+            return act
     
     def _process_single_labels(self, picking_id):
         MrpProd = self.env['mrp.production']
@@ -160,22 +242,36 @@ class WizardStowageLabels(models.TransientModel):
         
         total_qty = int(sum(picking_id.move_line_ids_without_package.mapped('qty_done')))
         lines = []
+        list_records = []
+        sublist = []
+        count_l = 1
         for idx in range(1, total_qty + 1):
-            lines.append({
-                'pn' : product_name,
-                'mo' : picking_id.origin,
-                'lot' : lot_names,#'LOTE', 
-                'qa' : qa_initials,#'INICIALES',
-                'storage_location' : storage_location,#'UBICACION ALMACENAJE',
-                'mo_date' : mo_date,#'FECHA FABRICACION',
-                'count' : f'{idx} de {total_qty}'
-            })
+            xvals = {
+                        'pn' : product_name,
+                        'mo' : picking_id.origin,
+                        'lot' : lot_names,#'LOTE', 
+                        'qa' : qa_initials,#'INICIALES',
+                        'storage_location' : storage_location,#'UBICACION ALMACENAJE',
+                        'mo_date' : mo_date,#'FECHA FABRICACION',
+                        'count' : f'{idx} de {total_qty}'
+                    }
+            lines.append(xvals)
+            if count_l <= 800:
+                sublist.append(xvals)
+                count_l += 1
+            else:
+                list_records.append(sublist)
+                sublist = [xvals]
+                count_l = 1
 
         picking_id.single_labels_printed = True
 
-        act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
-        act['data'] = {'lines' : lines}
-        return act
+        if self.split_labels:
+            self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label')
+        else:
+            act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
+            act['data'] = {'lines' : lines}
+            return act
 
     def print_labels(self):
         self.ensure_one()
@@ -190,13 +286,14 @@ class WizardStowageLabels(models.TransientModel):
         else:
             act = self._process_single_labels(picking_id)
         
-        self.onchange_label_type()
-        label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
-        label = map(lambda item: item[1], label)
-        msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
-        picking_id.message_post(body=msg)
-        return act
-    
+        if not self.split_labels:
+            self.onchange_label_type()
+            label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
+            label = map(lambda item: item[1], label)
+            msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
+            picking_id.message_post(body=msg)
+            return act
+        
     @api.onchange('label_type')
     def onchange_label_type(self):
         picking_id = self.env.context['active_id']
