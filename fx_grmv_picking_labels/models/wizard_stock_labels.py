@@ -40,8 +40,8 @@ class WizardStowageLabels(models.TransientModel):
             file_name = "Etiqueta %s" % count_str
 
             report_from_action = self.env.ref(report_name)
-            report_from_action['data'] = {'lines' : list_ids}
-            result, format = report_from_action._render_qweb_pdf(list_ids)
+            # report_from_action['data'] = {'lines' : list_ids}
+            result, format = report_from_action._render_qweb_pdf(list_ids,{'data': {'lines' : list_ids}})
 
             # # TODO in trunk, change return format to binary to match message_post expected format
             result = base64.b64encode(result)
