@@ -2,6 +2,12 @@
 from odoo import fields, models, api
 from odoo.exceptions import UserError
 
+class WizardStowageLabelsFile(models.TransientModel):
+    _name = 'wizard.stowage.labels.file'
+
+    wizard_id = fields.Many2one('wizard.stowage.labels', 'ID Ref')
+    binary_file = fields.Binary('Archivo')
+    binary_file_name = fields.Char('Nombre del Archivo')
 
 class WizardStowageLabels(models.TransientModel):
     _name = 'wizard.stowage.labels'
@@ -16,6 +22,7 @@ class WizardStowageLabels(models.TransientModel):
         string='Etiqueta a imprimir', default='single'
     )
 
+    report_files = fields.One2many('wizard.stowage.labels.file', 'wizard_id', 'Archivos')
     def _process_stowage_labels(self, picking_id):
         if self.platform_qty < 1:
             raise UserError('Indique un número de etiquetas mayor que cero')
@@ -137,7 +144,7 @@ class WizardStowageLabels(models.TransientModel):
         mrp_prod_id = MrpProd.search([('name', 'ilike', f'{picking_id.origin}%%')])
         if not len(mrp_prod_id):
             raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
-            
+
         date_finished = mrp_prod_id[0].date_finished
         mo_date = date_finished.strftime('%d/%m/%Y') if date_finished else ""
         
