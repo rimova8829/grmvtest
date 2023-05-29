@@ -172,6 +172,9 @@ class WizardStowageLabels(models.TransientModel):
                 count_l = 1
             label_qty = total_qty
 
+        if sublist and sublist not in list_records:
+            list_records.append(sublist)
+            
         picking_id.stowage_labels_printed = True
 
         #
@@ -215,6 +218,9 @@ class WizardStowageLabels(models.TransientModel):
                 list_records.append(sublist)
                 sublist = [xvals]
                 count_l = 1
+
+        if sublist and sublist not in list_records:
+            list_records.append(sublist)
 
         picking_id.qa_labels_printed = True
         if self.split_labels:
@@ -278,6 +284,9 @@ class WizardStowageLabels(models.TransientModel):
                 list_records.append(sublist)
                 sublist = [xvals]
                 count_l = 1
+
+        if sublist and sublist not in list_records:
+            list_records.append(sublist)
 
         picking_id.single_labels_printed = True
 
