@@ -78,11 +78,21 @@
         </t>
     </template>
 
-    <report id="stock_single_label"
+    <!-- <report id="stock_single_label"
         model="stock.picking"
         string="Etiqueta indivivual"
         report_type="qweb-pdf"
         name="fx_grmv_picking_labels.picking_single_label_template"
-        file="fx_grmv_picking_labels.picking_single_label_template"/>
+        file="fx_grmv_picking_labels.picking_single_label_template"/> -->
 
+    <record id="stock_single_label" model="ir.actions.report">
+        <field name="name">Etiqueta indivivual</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fx_grmv_picking_labels.picking_single_label_template</field>
+        <field name="report_file">fx_grmv_picking_labels.picking_single_label_template</field>
+        <field name="binding_model_id" ref="picking.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+        
 </odoo>

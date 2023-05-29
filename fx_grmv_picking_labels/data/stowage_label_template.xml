@@ -86,11 +86,21 @@
         </t>
     </template>
 
-    <report id="stowage_stock_label"
+    <!-- <report id="stowage_stock_label"
         model="stock.picking"
         string="Etiqueta estibo"
         report_type="qweb-pdf"
         name="fx_grmv_picking_labels.stowage_picking_label_template"
-        file="fx_grmv_picking_labels.stowage_picking_label_template"/>
+        file="fx_grmv_picking_labels.stowage_picking_label_template"/> -->
+
+    <record id="stowage_stock_label" model="ir.actions.report">
+        <field name="name">Etiqueta estibo</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fx_grmv_picking_labels.stowage_picking_label_template</field>
+        <field name="report_file">fx_grmv_picking_labels.stowage_picking_label_template</field>
+        <field name="binding_model_id" ref="picking.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
 
 </odoo>
