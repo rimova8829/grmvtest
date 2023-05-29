@@ -27,7 +27,7 @@ class WizardStowageLabels(models.TransientModel):
     reports_file_ok = fields.Boolean('Archivos Listos')
     report_file_ids = fields.One2many('wizard.stowage.labels.file', 'wizard_id', 'Archivos')
 
-    def generate_labels_adjunts(self, list_records, report_name):
+    def generate_labels_adjunts(self, list_records, report_name, picking_id):
         xbinary_lines = []
         attachment_obj = self.env['ir.attachment'].sudo()
         wizard_binary_obj = self.env['wizard.stowage.labels.file']
@@ -40,8 +40,8 @@ class WizardStowageLabels(models.TransientModel):
             file_name = "Etiqueta %s" % count_str
 
             report_from_action = self.env.ref(report_name)
-            # report_from_action['data'] = {'lines' : list_ids}
-            result, format = report_from_action._render_qweb_pdf(list_ids,{'data': {'lines' : list_ids}})
+            data = {'data': {'lines' : list_ids}}
+            result, format = report_from_action._render_qweb_pdf(list_ids,data=data)
 
             # # TODO in trunk, change return format to binary to match message_post expected format
             result = base64.b64encode(result)
@@ -164,7 +164,7 @@ class WizardStowageLabels(models.TransientModel):
         #
         #
         if self.split_labels:
-            self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label')
+            self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label', picking_id)
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(self)
             act['data'] = {'lines' : lines}
@@ -204,7 +204,7 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.qa_labels_printed = True
         if self.split_labels:
-            self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label')
+            self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label', picking_id)
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.qa_stock_label').report_action(self)
             act['data'] = {'lines' : lines}
@@ -267,7 +267,7 @@ class WizardStowageLabels(models.TransientModel):
         picking_id.single_labels_printed = True
 
         if self.split_labels:
-            self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label')
+            self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label', picking_id)
         else:
             act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
             act['data'] = {'lines' : lines}
