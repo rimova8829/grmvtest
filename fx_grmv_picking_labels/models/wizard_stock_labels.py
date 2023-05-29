@@ -37,7 +37,7 @@ class WizardStowageLabels(models.TransientModel):
                 count_str = '0'+str(count)
             else:
                 count_str = str(count)
-            file_name = "Etiqueta %s" % count_str
+            file_name = "Etiquetas - %s" % count_str
 
             report_from_action = self.env.ref(report_name)
             data = {'data': {'lines' : list_ids}}
