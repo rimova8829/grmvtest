@@ -177,7 +177,7 @@ class WizardStowageLabels(models.TransientModel):
         #
         #
         if self.split_labels:
-            action_return = self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label', picking_id)
+            action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stowage_stock_label', picking_id)
             return action_return
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(self)
@@ -218,7 +218,7 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.qa_labels_printed = True
         if self.split_labels:
-            action_return = self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label', picking_id)
+            action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.qa_stock_label', picking_id)
             return action_return
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.qa_stock_label').report_action(self)
