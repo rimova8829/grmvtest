@@ -93,6 +93,7 @@
         <field name="report_file">fx_grmv_picking_labels.picking_single_label_template</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_grmv_picking_labels" />
     </record>
         
 </odoo>

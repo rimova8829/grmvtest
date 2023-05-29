@@ -41,6 +41,7 @@ class WizardStowageLabels(models.TransientModel):
 
             report_from_action = self.env.ref(report_name)
             data = {'data': {'lines' : list_ids}}
+
             result, format = report_from_action._render_qweb_pdf(picking_id, {'lines' : list_ids})
 
             # # TODO in trunk, change return format to binary to match message_post expected format
@@ -143,7 +144,7 @@ class WizardStowageLabels(models.TransientModel):
         label_qty = total_qty
         list_records = []
         sublist = []
-        count_l = 1
+        count_l = 0
         for idx in range(1, pages_qty + 1):
             label_qty = self.platform_qty
             # cantidad disponible disminuye con cada etiqueta
@@ -163,7 +164,7 @@ class WizardStowageLabels(models.TransientModel):
                         'count' : f'{idx} de {pages_qty}'
                     }
             lines.append(xvals)
-            if count_l <= 800:
+            if count_l < 500:
                 sublist.append(xvals)
                 count_l += 1
             else:
@@ -200,7 +201,7 @@ class WizardStowageLabels(models.TransientModel):
         lines = []
         list_records = []
         sublist = []
-        count_l = 1
+        count_l = 0
         for ln in picking_id.move_line_ids_without_package:
             xvals = {
                         'pn' : ln.product_id.display_name,
@@ -211,7 +212,7 @@ class WizardStowageLabels(models.TransientModel):
                         'location_dest' :  location_dest
                     }
             lines.append(xvals)
-            if count_l <= 800:
+            if count_l < 500:
                 sublist.append(xvals)
                 count_l += 1
             else:
@@ -265,7 +266,7 @@ class WizardStowageLabels(models.TransientModel):
         lines = []
         list_records = []
         sublist = []
-        count_l = 1
+        count_l = 0
         for idx in range(1, total_qty + 1):
             xvals = {
                         'pn' : product_name,
@@ -277,7 +278,7 @@ class WizardStowageLabels(models.TransientModel):
                         'count' : f'{idx} de {total_qty}'
                     }
             lines.append(xvals)
-            if count_l <= 800:
+            if count_l < 500:
                 sublist.append(xvals)
                 count_l += 1
             else:
@@ -289,7 +290,6 @@ class WizardStowageLabels(models.TransientModel):
             list_records.append(sublist)
 
         picking_id.single_labels_printed = True
-
         if self.split_labels:
             action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label', picking_id)
             return action_return
