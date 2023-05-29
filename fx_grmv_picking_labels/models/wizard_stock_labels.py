@@ -41,7 +41,7 @@ class WizardStowageLabels(models.TransientModel):
 
             report_from_action = self.env.ref(report_name)
             data = {'data': {'lines' : list_ids}}
-            result, format = report_from_action._render_qweb_pdf(list_ids,data=data)
+            result, format = report_from_action._render_qweb_pdf(list_ids, data=data)
 
             # # TODO in trunk, change return format to binary to match message_post expected format
             result = base64.b64encode(result)
@@ -56,6 +56,7 @@ class WizardStowageLabels(models.TransientModel):
             xline = (0,0,data_attach_pdf)
             xbinary_lines.append(xline)
             count += 1
+
         self.reports_file_ok = True
         self.report_file_ids = xbinary_lines
 
@@ -66,7 +67,7 @@ class WizardStowageLabels(models.TransientModel):
         picking_id.message_post(body=msg)
 
         return {
-            'name': _('Etiquetas'),
+            'name': 'Etiquetas PDF',
             'view_mode': 'form',
             'view_id': self.env.ref('fx_grmv_picking_labels.stowage_labels_form').id,
             'res_model': 'wizard.stowage.labels',
