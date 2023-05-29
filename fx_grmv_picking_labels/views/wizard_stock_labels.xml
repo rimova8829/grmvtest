@@ -30,7 +30,7 @@
                             </tree>
                         </field>
                     </group>
-                    <h2 attrs="{'invisible' : ['|',('labels_printed', '=', False),('reports_file_ok','=',False)]}">
+                    <h2 attrs="{'invisible' : ['|',('labels_printed', '=', False),('reports_file_ok','=',True)]}">
                         <span style="color: red">Etiquetas impresas previamente, ¿desea continuar?</span>
                     </h2>
                 </sheet>
