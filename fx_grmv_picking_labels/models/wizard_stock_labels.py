@@ -60,21 +60,33 @@ class WizardStowageLabels(models.TransientModel):
         self.reports_file_ok = True
         self.report_file_ids = xbinary_lines
 
-        self.onchange_label_type()
-        label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
-        label = map(lambda item: item[1], label)
-        msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
-        picking_id.message_post(body=msg)
+        # self.onchange_label_type()
+        # label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
+        # label = map(lambda item: item[1], label)
+        # msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
+        # picking_id.message_post(body=msg)
 
-        return {
-            'name': 'Etiquetas PDF',
-            'view_mode': 'form',
-            'view_id': self.env.ref('fx_grmv_picking_labels.stowage_labels_form').id,
-            'res_model': 'wizard.stowage.labels',
-            'context': "{}", # self.env.context
-            'type': 'ir.actions.act_window',
-            'res_id': self.id,
-        }
+        # action_return = {
+        #                     'name': 'Etiquetas PDF',
+        #                     'view_mode': 'form',
+        #                     'view_id': self.env.ref('fx_grmv_picking_labels.stowage_labels_form').id,
+        #                     'res_model': 'wizard.stowage.labels',
+        #                     'context': "{}", # self.env.context
+        #                     'type': 'ir.actions.act_window',
+        #                     'res_id': self.id,
+        #                 }
+
+        action_return =  {
+                            'name': 'Etiquetas PDF',
+                            'type': 'ir.actions.act_window',
+                            'res_model': 'wizard.stowage.labels',
+                            'view_mode': 'form',
+                            'view_type': 'form',
+                            'res_id': self.id,
+                            'views': [(False, 'form')],
+                            'target': 'new',
+                          }
+        return action_return
                 
 
     def _process_stowage_labels(self, picking_id):
@@ -165,7 +177,8 @@ class WizardStowageLabels(models.TransientModel):
         #
         #
         if self.split_labels:
-            self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label', picking_id)
+            action_return = self.generate_labels_adjunts('fx_grmv_picking_labels.stowage_stock_label', picking_id)
+            return action_return
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(self)
             act['data'] = {'lines' : lines}
@@ -205,7 +218,8 @@ class WizardStowageLabels(models.TransientModel):
 
         picking_id.qa_labels_printed = True
         if self.split_labels:
-            self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label', picking_id)
+            action_return = self.generate_labels_adjunts('fx_grmv_picking_labels.qa_stock_label', picking_id)
+            return action_return
         else:
             act = self.env.ref(list_records, 'fx_grmv_picking_labels.qa_stock_label').report_action(self)
             act['data'] = {'lines' : lines}
@@ -268,7 +282,8 @@ class WizardStowageLabels(models.TransientModel):
         picking_id.single_labels_printed = True
 
         if self.split_labels:
-            self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label', picking_id)
+            action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label', picking_id)
+            return action_return
         else:
             act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
             act['data'] = {'lines' : lines}
@@ -287,13 +302,12 @@ class WizardStowageLabels(models.TransientModel):
         else:
             act = self._process_single_labels(picking_id)
         
-        if not self.split_labels:
-            self.onchange_label_type()
-            label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
-            label = map(lambda item: item[1], label)
-            msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
-            picking_id.message_post(body=msg)
-            return act
+        self.onchange_label_type()
+        label = filter(lambda item: item[0] == self.label_type, self._fields['label_type'].selection)
+        label = map(lambda item: item[1], label)
+        msg = f'El usuario {self.env.user.name} ha generado las etiquetas de tipo "{list(label)[0]}"'
+        picking_id.message_post(body=msg)
+        return act
         
     @api.onchange('label_type')
     def onchange_label_type(self):
