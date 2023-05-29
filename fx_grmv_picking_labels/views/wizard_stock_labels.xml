@@ -22,8 +22,8 @@
                         </group>
                         <group/>
                     </group>
-                    <group attrs="{'invisible':[('reports_file_ok','=',False)]}">
-                        <field name="report_file_ids" readonly="1">
+                    <group attrs="{'invisible':[('reports_file_ok','=',False)]}" string="Etiquetas">
+                        <field name="report_file_ids" readonly="1" nolabel="1">
                             <tree string="Reportes" create="false">
                                 <field name="binary_file_name" invisible="1"/>
                                 <field name="binary_file" filename="binary_file_name" widget="binary"/>
