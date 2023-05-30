@@ -77,11 +77,9 @@
         name="fx_grmv_picking_labels.qa_picking_label_template"
         file="fx_grmv_picking_labels.qa_picking_label_template"/> -->
 
-      <record id="paperformat_grmv_picking_labels" model="report.paperformat">
-          <field name="name">Etiquetas GRMV</field>
+      <record id="paperformat_quality_grmv_picking_labels" model="report.paperformat">
+          <field name="name">Etiquetas Calidad GRMV</field>
           <field name="format">custom</field>
-          <field name="page_height">60</field>
-          <field name="page_width">60</field>
           <field name="orientation">Landscape</field>
           <field name="margin_top">2</field>
           <field name="margin_bottom">2</field>

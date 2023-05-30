@@ -94,7 +94,7 @@
         file="fx_grmv_picking_labels.stowage_picking_label_template"/> -->
 
       <record id="paperformat_stowage_grmv_picking_labels" model="report.paperformat">
-          <field name="name">Etiquetas GRMV</field>
+          <field name="name">Etiquetas Estibo GRMV</field>
           <field name="format">custom</field>
           <field name="orientation">Landscape</field>
           <field name="margin_top">2</field>
