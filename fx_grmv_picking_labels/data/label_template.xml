@@ -98,7 +98,7 @@
         <field name="report_file">fx_grmv_picking_labels.qa_picking_label_template</field>
         <field name="binding_model_id" ref="stock.model_stock_picking"/>
         <field name="binding_type">report</field>
-        <field name="paperformat_id" ref="paperformat_grmv_picking_labels" />
+        <field name="paperformat_id" ref="paperformat_quality_grmv_picking_labels" />
     </record>
         
 
