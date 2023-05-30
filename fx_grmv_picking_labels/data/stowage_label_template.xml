@@ -96,6 +96,8 @@
       <record id="paperformat_stowage_grmv_picking_labels" model="report.paperformat">
           <field name="name">Etiquetas Estibo GRMV</field>
           <field name="format">custom</field>
+          <field name="page_height">100</field>
+          <field name="page_width">160</field>
           <field name="orientation">Landscape</field>
           <field name="margin_top">2</field>
           <field name="margin_bottom">2</field>
