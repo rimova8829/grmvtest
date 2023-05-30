@@ -184,7 +184,7 @@ class WizardStowageLabels(models.TransientModel):
             action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stowage_stock_label', picking_id)
             return action_return
         else:
-            act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(self)
+            act = self.env.ref(list_records, 'fx_grmv_picking_labels.stowage_stock_label').report_action(picking_id)
             act['data'] = {'lines' : lines}
             return act
 
@@ -228,7 +228,7 @@ class WizardStowageLabels(models.TransientModel):
             action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.qa_stock_label', picking_id)
             return action_return
         else:
-            act = self.env.ref(list_records, 'fx_grmv_picking_labels.qa_stock_label').report_action(self)
+            act = self.env.ref('fx_grmv_picking_labels.qa_stock_label').report_action(picking_id)
             act['data'] = {'lines' : lines}
             return act
     
@@ -294,7 +294,7 @@ class WizardStowageLabels(models.TransientModel):
             action_return = self.generate_labels_adjunts(list_records, 'fx_grmv_picking_labels.stock_single_label', picking_id)
             return action_return
         else:
-            act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(self)
+            act = self.env.ref('fx_grmv_picking_labels.stock_single_label').report_action(picking_id)
             act['data'] = {'lines' : lines}
             return act
 
