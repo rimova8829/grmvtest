@@ -35,7 +35,7 @@ _logger = logging.getLogger(__name__)
 class Followers(models.Model):
     _inherit = 'mail.followers'
 
-    _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
+    def _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
                           customer_ids=None, check_existing=True, existing_policy='skip'):
         context = self._context
         if self._context.get('mail_post_autofollow', False):
