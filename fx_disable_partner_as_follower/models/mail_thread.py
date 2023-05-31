@@ -32,6 +32,18 @@ from odoo.exceptions import RedirectWarning, UserError, ValidationError, AccessE
 
 _logger = logging.getLogger(__name__)
 
+class Followers(models.Model):
+    _inherit = 'mail.followers'
+
+    _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
+                          customer_ids=None, check_existing=True, existing_policy='skip'):
+        context = self._context
+        if self._context.get('mail_post_autofollow', False):
+            return False
+        else:
+            res = super(Followers, self)._insert_followers(res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
+                          customer_ids=customer_ids, check_existing=check_existing, existing_policy=existing_policy)
+            return res
 
 class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
