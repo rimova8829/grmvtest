@@ -95,14 +95,14 @@ class WizardStowageLabels(models.TransientModel):
             raise UserError('Indique un número de etiquetas mayor que cero')
         
         label_date = False
-        if picking_id.origin.lower().startswith('mo'):
+        if '/mo/' in picking_id.origin.lower():
             mrp_prod_id = self.env['mrp.production'].search(
                 [('name', 'ilike', f'{picking_id.origin}%%')]
             )
             if not len(mrp_prod_id):
                 raise UserError(f'No se encontró la orden de fabricación "{picking_id.origin}"')
             label_date = mrp_prod_id[0].date_finished
-        elif picking_id.origin.lower().startswith('po'):
+        elif picking_id.origin.lower().startswith('p'):
             purchase_id = self.env['purchase.order'].search(
                 [('name', '=', picking_id.origin), ('state', 'in', ['purchase', 'done'])]
             )
