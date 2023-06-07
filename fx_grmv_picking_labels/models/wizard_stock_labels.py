@@ -93,6 +93,24 @@ class WizardStowageLabels(models.TransientModel):
     def _process_stowage_labels(self, picking_id):
         if self.platform_qty < 1:
             raise UserError('Indique un número de etiquetas mayor que cero')
+        
+        label_date = False
+        if picking_id.origin.lower().startswith('mo'):
+            mrp_prod_id = self.env['mrp.production'].search(
+                [('name', 'ilike', f'{picking_id.origin}%%')]
+            )
+            if not len(mrp_prod_id):
+                raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
+            label_date = mrp_prod_id[0].date_finished
+        elif picking_id.origin.lower().startswith('po'):
+            purchase_id = self.env['purchase.order'].search(
+                [('name', '=', picking_id.origin), ('state', 'in', ['purchase', 'done'])]
+            )
+            if not len(purchase_id):
+                raise UserError(f'No se encontró la orden de fabricación {picking_id.origin} o no esta confirmada')
+            label_date = purchase_id[0].date_approve
+        if not label_date:
+            raise UserError('No se encontró orden fabricación ni orden de compra')
 
         # calcular num de etiquetas = total_piezas / piezas_tarima
         total_qty = sum(picking_id.move_line_ids_without_package.mapped('qty_done'))
@@ -108,7 +126,6 @@ class WizardStowageLabels(models.TransientModel):
             pages_qty += 1 # agregar una etiqueta para piezas residuales
 
         # valores para las etiquetas
-        MrpProd = self.env['mrp.production']
         lot_names = ','.join(
             picking_id.move_line_ids_without_package.mapped('lot_id.display_name')
         )
@@ -119,15 +136,7 @@ class WizardStowageLabels(models.TransientModel):
         else:
             qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
             qa_initials = '.'.join(qa_initials)
-
-        mrp_prod_id = MrpProd.search([('name', 'ilike', f'{picking_id.origin}%%')])
-        if not len(mrp_prod_id):
-            raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
-        
-        date_finished = mrp_prod_id[0].date_finished
-        mo_date = date_finished.strftime('%d/%m/%Y') if date_finished else ""
-
-        
+                
         storage_location = picking_id.move_line_ids_without_package\
             .mapped('product_id.putaway_rule_ids')
         if not len(storage_location):
@@ -153,16 +162,16 @@ class WizardStowageLabels(models.TransientModel):
                 label_qty = total_qty - (self.platform_qty * (idx - 1))
 
             xvals = {
-                        'pn' : product_name,
-                        'mo' : picking_id.origin,
-                        'qty' : f'{label_qty} de {total_qty}',
-                        'lot' : lot_names,#'LOTE',
-                        'qa' : qa_initials,#'INICIALES',
-                        'location_dest' : storage_location,#'ALMACENAMIENTO',
-                        'mo_date' : mo_date,#'FECHA MO',
-                        'pick_date' : pick_date,
-                        'count' : f'{idx} de {pages_qty}'
-                    }
+                'pn' : product_name,
+                'mo' : picking_id.origin,
+                'qty' : f'{label_qty} de {total_qty}',
+                'lot' : lot_names,#'LOTE',
+                'qa' : qa_initials,#'INICIALES',
+                'location_dest' : storage_location,#'ALMACENAMIENTO',
+                'mo_date' : label_date.strftime('%d/%m/%Y'),#'FECHA MO',
+                'pick_date' : pick_date,
+                'count' : f'{idx} de {pages_qty}'
+            }
             lines.append(xvals)
             if count_l < 500:
                 sublist.append(xvals)
