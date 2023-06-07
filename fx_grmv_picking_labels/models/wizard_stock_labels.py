@@ -100,14 +100,14 @@ class WizardStowageLabels(models.TransientModel):
                 [('name', 'ilike', f'{picking_id.origin}%%')]
             )
             if not len(mrp_prod_id):
-                raise UserError(f'No se encontró la orden de fabricación {picking_id.origin}')
+                raise UserError(f'No se encontró la orden de fabricación "{picking_id.origin}"')
             label_date = mrp_prod_id[0].date_finished
         elif picking_id.origin.lower().startswith('po'):
             purchase_id = self.env['purchase.order'].search(
                 [('name', '=', picking_id.origin), ('state', 'in', ['purchase', 'done'])]
             )
             if not len(purchase_id):
-                raise UserError(f'No se encontró la orden de fabricación {picking_id.origin} o no esta confirmada')
+                raise UserError(f'No se encontró la orden de compra "{picking_id.origin}" o no esta confirmada')
             label_date = purchase_id[0].date_approve
         if not label_date:
             raise UserError('No se encontró orden fabricación ni orden de compra')
