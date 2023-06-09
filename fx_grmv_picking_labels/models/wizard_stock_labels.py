@@ -205,7 +205,12 @@ class WizardStowageLabels(models.TransientModel):
             qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
             qa_initials = '.'.join(qa_initials)
 
-        location_dest = picking_id.location_id.display_name
+        storage_location = picking_id.move_line_ids_without_package\
+            .mapped('product_id.putaway_rule_ids')
+        if not len(storage_location):
+            storage_location = picking_id.location_dest_id.display_name
+        else:
+            storage_location = storage_location[0].location_out_id.display_name
 
         lines = []
         list_records = []
@@ -213,13 +218,13 @@ class WizardStowageLabels(models.TransientModel):
         count_l = 0
         for ln in picking_id.move_line_ids_without_package:
             xvals = {
-                        'pn' : ln.product_id.display_name,
-                        'mo' : picking_id.origin,
-                        'qty' : '%0.2f' % ln.qty_done,
-                        'lot' : ln.lot_id.display_name,#'LOTE',
-                        'qa' : qa_initials,#'INICIALES',
-                        'location_dest' :  location_dest
-                    }
+                'pn' : ln.product_id.display_name,
+                'mo' : picking_id.origin,
+                'qty' : '%0.2f' % ln.qty_done,
+                'lot' : ln.lot_id.display_name,#'LOTE',
+                'qa' : qa_initials,#'INICIALES',
+                'location_dest' :  storage_location
+            }
             lines.append(xvals)
             if count_l < 500:
                 sublist.append(xvals)
