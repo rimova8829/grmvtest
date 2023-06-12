@@ -47,18 +47,18 @@ class Followers(models.Model):
             return res
 
 
-    @api.model_create_multi
-    def create(self, values_list):
+    # @api.model_create_multi
+    # def create(self, values_list):
 
-        context = self._context
+    #     context = self._context
 
-        if self._context.get('mail_post_autofollow', False):
-            res = super(Followers, self).create(vals_list)
-            res.unlink()
-            return False
-        else:
-            res = super(Followers, self).create(vals_list)
-            return res
+    #     if self._context.get('mail_post_autofollow', False):
+    #         res = super(Followers, self).create(values_list)
+    #         res.unlink()
+    #         return False
+    #     else:
+    #         res = super(Followers, self).create(values_list)
+    #         return res
 
 
     def _add_default_followers(self, res_model, res_ids, partner_ids, channel_ids=None, customer_ids=None,
