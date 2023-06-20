@@ -113,8 +113,19 @@ class WizardStowageLabels(models.TransientModel):
             raise UserError('No se encontró orden fabricación ni orden de compra')
 
         # calcular num de etiquetas = total_piezas / piezas_tarima
-        total_qty = sum(picking_id.move_line_ids_without_package.mapped('qty_done'))
-        total_qty = int(total_qty)
+        #total_qty = sum(picking_id.move_line_ids_without_package.mapped('qty_done'))
+        list_products = []
+        dict_products_qty = {}
+        for line in picking_id.move_line_ids_without_package:
+            if line.product_id.id not in list_products:
+                list_products.append(line.product_id.id)
+                dict_products_qty[line.product_id.id] = line.qty_done
+            else:
+                line_pev_qty = dict_products_qty[line.product_id.id] 
+                line_new_qty = line_pev_qty + line.qty_done
+                dict_products_qty[line.product_id.id] = line_new_qty
+
+        total_qty = int(dict_products_qty[list_products[0]])
         if self.platform_qty > total_qty:
             raise UserError(
                 'Indique una cantidad menor o igual al total de piezas del traslado'
@@ -154,17 +165,28 @@ class WizardStowageLabels(models.TransientModel):
         list_records = []
         sublist = []
         count_l = 0
+        subproduct_name = ""
+        sub_label_qty = 0.0
+        sub_total_qty = 0.0
+        if len(list_products) > 1:
+            subproduct_name = picking_id.move_line_ids_without_package\
+            .mapped('product_id.display_name')[1]
+            sub_total_qty = int(dict_products_qty[list_products[1]])
         for idx in range(1, pages_qty + 1):
             label_qty = self.platform_qty
             # cantidad disponible disminuye con cada etiqueta
             if pages_qty_module != 0 and idx == pages_qty:
                 # la etiqueta residual contiene menos piezas que las demas
                 label_qty = total_qty - (self.platform_qty * (idx - 1))
-
+            xfactor = label_qty / total_qty
+            if subproduct_name:
+                sub_label_qty = sub_total_qty * xfactor
             xvals = {
                 'pn' : product_name,
                 'mo' : picking_id.origin,
                 'qty' : f'{label_qty} de {total_qty}',
+                'spn': subproduct_name,
+                'sqty' : f'{sub_label_qty} de {sub_total_qty}' if subproduct_name else "",
                 'lot' : lot_names,#'LOTE',
                 'qa' : qa_initials,#'INICIALES',
                 'location_dest' : storage_location,#'ALMACENAMIENTO',

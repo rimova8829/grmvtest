@@ -31,6 +31,22 @@
                               </div>
                             </td>
                         </tr>
+                        <tr t-if="line['spn'">
+                            <td>
+                              <div class="row">
+                                <span>SP/N:</span>
+                                <span t-esc="line['spn']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr t-if="line['sqty']">
+                            <td>
+                              <div class="row">
+                                <span>Cantidad:</span>
+                                <span t-esc="line['sqty']"/>
+                              </div>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                               <div class="row">
