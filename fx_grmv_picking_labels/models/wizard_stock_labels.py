@@ -181,6 +181,7 @@ class WizardStowageLabels(models.TransientModel):
             xfactor = label_qty / total_qty
             if subproduct_name:
                 sub_label_qty = sub_total_qty * xfactor
+                sub_label_qty = round(sub_label_qty,4)
             xvals = {
                 'pn' : product_name,
                 'mo' : picking_id.origin,
