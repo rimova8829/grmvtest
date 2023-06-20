@@ -31,7 +31,7 @@
                               </div>
                             </td>
                         </tr>
-                        <tr t-if="line['spn'">
+                        <tr t-if="line['spn']">
                             <td>
                               <div class="row">
                                 <span>SP/N:</span>

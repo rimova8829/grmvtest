@@ -37,8 +37,9 @@ class Followers(models.Model):
 
     def _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
                           customer_ids=None, check_existing=True, existing_policy='skip'):
-        
+        _logger.info("\n############# _insert_followers >>>>>>> ")
         context = self._context
+        _logger.info("\n::::::::: context %s" % context)
         if self._context.get('mail_post_autofollow', False):
             return False
         else:
@@ -49,7 +50,9 @@ class Followers(models.Model):
     @api.model_create_multi
     def create(self, values_list):
 
+        _logger.info("\n############# Followers create >>>>>>> ")
         context = self._context
+        _logger.info("\n::::::::: context %s" % context)
 
         if self._context.get('mail_post_autofollow', False):
             res = super(Followers, self).create(values_list)
@@ -62,7 +65,9 @@ class Followers(models.Model):
     def _add_default_followers(self, res_model, res_ids, partner_ids, channel_ids=None, customer_ids=None,
                                check_existing=True, existing_policy='skip'):
 
+        _logger.info("\n############# _add_default_followers >>>>>>> ")
         context = self._context
+        _logger.info("\n::::::::: context %s" % context)
 
         if self._context.get('mail_post_autofollow', False):
             return res
@@ -77,7 +82,9 @@ class MailThread(models.AbstractModel):
     _description = 'Email Thread'
 
     def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
+        _logger.info("\n############# message_subscribe >>>>>>> ")
         context = self._context
+        _logger.info("\n::::::::: context %s" % context)
         # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'default_res_model': 'sale.order', 'default_res_id': 6, 'mail_invite_follower_channel_only': False}
         # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'mail_post_autofollow': True}
         if self._context.get('mail_post_autofollow', False):
