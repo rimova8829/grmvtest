@@ -40,7 +40,7 @@ class Followers(models.Model):
         _logger.info("\n############# _insert_followers >>>>>>> ")
         context = self._context
         _logger.info("\n::::::::: context %s" % context)
-        if self._context.get('mail_post_autofollow', False):
+        if self._context.get('mail_post_autofollow', False) or not context.get('active_model',False):
             return False
         else:
             res = super(Followers, self)._insert_followers(res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
@@ -54,7 +54,7 @@ class Followers(models.Model):
         context = self._context
         _logger.info("\n::::::::: context %s" % context)
 
-        if self._context.get('mail_post_autofollow', False):
+        if self._context.get('mail_post_autofollow', False) or not context.get('active_model',False):
             res = super(Followers, self).create(values_list)
             res.unlink()
             return False
@@ -69,7 +69,7 @@ class Followers(models.Model):
         context = self._context
         _logger.info("\n::::::::: context %s" % context)
 
-        if self._context.get('mail_post_autofollow', False):
+        if self._context.get('mail_post_autofollow', False) or not context.get('active_model',False):
             return res
         else:
             res = super(Followers, self)._add_default_followers(res_model, res_ids, partner_ids, channel_ids=channel_ids, customer_ids=customer_ids,
@@ -87,7 +87,7 @@ class MailThread(models.AbstractModel):
         _logger.info("\n::::::::: context %s" % context)
         # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'default_res_model': 'sale.order', 'default_res_id': 6, 'mail_invite_follower_channel_only': False}
         # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'mail_post_autofollow': True}
-        if self._context.get('mail_post_autofollow', False):
+        if self._context.get('mail_post_autofollow', False) or not context.get('active_model',False):
             return False
         else:
             res = super(MailThread, self).message_subscribe(partner_ids, channel_ids, subtype_ids)
