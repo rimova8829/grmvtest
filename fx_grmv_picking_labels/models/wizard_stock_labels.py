@@ -180,8 +180,8 @@ class WizardStowageLabels(models.TransientModel):
             
             pick_date = picking_id.date_done.strftime('%d/%m/%Y')
             
-            product_name = picking_id.move_line_ids_without_package\
-                .mapped('product_id.display_name')[0]
+            product_br = self.env['product.product'].browse(product)
+            product_name = product_br.display_name
             
             label_qty = total_qty
 
