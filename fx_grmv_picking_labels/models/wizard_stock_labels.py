@@ -21,7 +21,6 @@ class WizardStowageLabels(models.TransientModel):
             for line in picking_id.move_line_ids_without_package:
                 if line.product_id.id not in list_products:
                     list_products.append(line.product_id.id)
-                    dict_products_qty[line.product_id.id] = line.qty_done
             if len(list_products) > 1:
                 rec.require_platform2_qty = True
             else:
