@@ -93,26 +93,6 @@ class MailThread(models.AbstractModel):
             res = super(MailThread, self).message_subscribe(partner_ids, channel_ids, subtype_ids)
             return res
 
-    def message_post(self, *,
-                     body='', subject=None, message_type='notification',
-                     email_from=None, author_id=None, parent_id=False,
-                     subtype_xmlid=None, subtype_id=False, partner_ids=None, channel_ids=None,
-                     attachments=None, attachment_ids=None,
-                     add_sign=True, record_name=False,
-                     **kwargs):
-        _logger.info("\n############# message_post >>>>>>> ")
-        context = self._context
-        _logger.info("\n::::::::: context %s" % context)
-        res = super(MailThread, self.with_context(mail_post_autofollow=True)).(*,
-                     body=body, subject=subject, message_type=message_type,
-                     email_from=email_from, author_id=author_id, parent_id=parent_id,
-                     subtype_xmlid=subtype_xmlid, subtype_id=subtype_id, partner_ids=partner_ids, 
-                     channel_ids=channel_ids,
-                     attachments=attachments, attachment_ids=attachment_ids,
-                     add_sign=add_sign, record_name=record_name,
-                     **kwargs)
-        return res
-
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
 
