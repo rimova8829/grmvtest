@@ -191,10 +191,6 @@ class WizardStowageLabels(models.TransientModel):
                 if pages_qty_module != 0 and idx == pages_qty:
                     # la etiqueta residual contiene menos piezas que las demas
                     label_qty = total_qty - (p_platform_qty * (idx - 1))
-                xfactor = label_qty / total_qty
-                if subproduct_name:
-                    sub_label_qty = sub_total_qty * xfactor
-                    sub_label_qty = round(sub_label_qty,4)
                 xvals = {
                     'pn' : product_name,
                     'mo' : picking_id.origin,

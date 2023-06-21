@@ -20,8 +20,8 @@
                                 }"/>
                             <field name="platform2_qty"
                                 attrs="{
-                                    'invisible' : [('label_type', '!=', 'stowage'),('require_platform2_qty','=',False)],
-                                    'required' : [('label_type', '=', 'stowage'),('require_platform2_qty','=',True)]
+                                    'invisible' : [('label_type', '!=', 'stowage')],
+                                    'required' : [('label_type', '=', 'stowage')]
                                 }"/>
                             <field name="require_platform2_qty" invisible="1"/>
                             <field name="split_labels" />
