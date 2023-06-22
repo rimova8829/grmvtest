@@ -2,75 +2,26 @@
 
     <template id="picking_single_label_template">
         <t t-call="web.html_container">
-          <t t-set="data_report_margin_top" t-value="8"/>
+          <t t-set="data_report_margin_top" t-value="1"/>
           <t t-set="data_report_header_spacing" t-value="1"/>
             <t t-foreach="lines" t-as="line">
               <div class="page">
-                  <table style="width: 48mm; height: 38mm; text-align:left; border: 1px solid black; padding-left: 0px;font-size:5px">
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>P/N:</span>
-                              <span t-esc="line['pn']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>PO:</span>
-                              <span t-esc="line['mo']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Cantidad:</span>
-                              <span t-esc="1"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Lote:</span>
-                              <span t-esc="line['lot']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Liberado por:</span>
-                              <span t-esc="line['qa']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Ubicación destino:</span>
-                              <span t-esc="line['storage_location']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Fecha fabricación:</span>
-                              <span t-esc="line['mo_date']"/>
-                            </div>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td>
-                            <div class="row">
-                              <span>Conteo:</span>
-                              <span t-esc="line['count']"/>
-                            </div>
-                          </td>
-                      </tr>
+                  <!-- border: 1px solid black; -->
+                  <table style="width: 48mm; height: 30mm; text-align:left; padding-left: 0px;font-size:8.5px;padding:0px;">
+                    <tr style="padding:0px;">
+                        <td style="padding:0px;">
+                          <div class="row">
+                            <span>P/N:</span> <span t-esc="line['pn']"/><br/>
+                            <span>PO:</span> <span t-esc="line['mo']"/><br/>
+                            <span>Cantidad:</span> <span t-esc="1"/><br/>
+                            <span>Lote:</span> <span t-esc="line['lot']"/><br/>
+                            <span>Liberado por:</span> <span t-esc="line['qa']"/><br/>
+                            <span>Ubicación destino:</span> <span t-esc="line['storage_location']"/><br/>
+                            <span>Fecha fabricación:</span> <span t-esc="line['mo_date']"/><br/>
+                            <span>Conteo:</span> <span t-esc="line['count']"/><br/>
+                          </div>
+                        </td>
+                    </tr>
                   </table>
                   <p style="page-break-before:always;"> </p>
               </div>
@@ -88,14 +39,14 @@
       <record id="paperformat_single_grmv_picking_labels" model="report.paperformat">
           <field name="name">Etiquetas Individual GRMV</field>
           <field name="format">custom</field>
-          <field name="page_height">60</field>
-          <field name="page_width">60</field>
+          <field name="page_height">52</field>
+          <field name="page_width">32</field>
           <field name="orientation">Landscape</field>
-          <field name="margin_top">2</field>
-          <field name="margin_bottom">2</field>
-          <field name="margin_left">2</field>
-          <field name="margin_right">2</field>
-          <field name="header_spacing">10</field>
+          <field name="margin_top">0</field>
+          <field name="margin_bottom">0</field>
+          <field name="margin_left">0</field>
+          <field name="margin_right">0</field>
+          <field name="header_spacing">0</field>
           <field name="dpi">80</field>
       </record>
 

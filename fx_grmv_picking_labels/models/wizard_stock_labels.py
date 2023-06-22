@@ -279,10 +279,33 @@ class WizardStowageLabels(models.TransientModel):
     
     def _process_single_labels(self, picking_id):
         MrpProd = self.env['mrp.production']
-        lot_names = ','.join(
-            picking_id.move_line_ids_without_package.mapped('lot_id.display_name')
-        )
 
+        list_products = []
+        dict_products_qty = {}
+        dict_products_lots = {}
+        for line in picking_id.move_line_ids_without_package:
+            if line.product_id.id not in list_products:
+                list_products.append(line.product_id.id)
+                dict_products_qty[line.product_id.id] = line.qty_done
+                if line.lot_id:
+                    dict_products_lots[line.product_id.id] = line.lot_id.name
+            else:
+                line_pev_qty = dict_products_qty[line.product_id.id] 
+                line_new_qty = line_pev_qty + line.qty_done
+                dict_products_qty[line.product_id.id] = line_new_qty
+                if line.product_id.id in dict_products_lots:
+                    prev_lot = dict_products_lots[line.product_id.id] 
+                    if line.lot_id:
+                        new_lot = prev_lot  +  line.lot_id.name
+
+        # lot_names = ','.join(
+        #     picking_id.move_line_ids_without_package.mapped('lot_id.display_name')
+        # )
+        
+        lot_names = ""
+        if list_products[0] in dict_products_lots:
+            lot_names = dict_products_lots[list_products[0]]
+        
         qa_initials = picking_id.check_ids.mapped('user_id.name')
         if not len(qa_initials):
             qa_initials = ''
@@ -304,10 +327,10 @@ class WizardStowageLabels(models.TransientModel):
         else:
             storage_location = storage_location[0].location_out_id.display_name
         
-        product_name = picking_id.move_line_ids_without_package\
-            .mapped('product_id.display_name')[0]
+        product_br = self.env['product.product'].browse(list_products[0])
+        product_name = product_br.display_name
         
-        total_qty = int(sum(picking_id.move_line_ids_without_package.mapped('qty_done')))
+        total_qty = int(dict_products_qty[list_products[0]])
         lines = []
         list_records = []
         sublist = []
