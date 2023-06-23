@@ -418,6 +418,12 @@ class WizardStowageLabels(models.TransientModel):
             product_name = product_br.display_name
             
             total_qty = int(dict_products_qty[list_products[0]])
+            qty_limit = self.qty_limit
+            if qty_limit > 0.0:
+                if qty_limit > total_qty:
+                    raise UserError("La cantidad limite %s es superior a la del Picking %s." % (qty_limit, total_qty))
+                total_qty = qty_limit
+                    
             lines = []
             list_records = []
             sublist = []
