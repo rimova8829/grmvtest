@@ -7,7 +7,7 @@
             <t t-foreach="lines" t-as="line">
               <div class="page">
                   <!-- border: 1px solid black; -->
-                  <table style="width: 48mm; height: 30mm; text-align:left; padding-left: 0px;font-size:8.5px;padding:0px;">
+                  <table style="width: 48mm; height: 30mm; text-align:left; padding-left: 0px;font-size:8.5px;padding:0px;padding-top:5px;">
                     <tr style="padding:0px;">
                         <td style="padding:0px;">
                           <div class="row">
