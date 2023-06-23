@@ -35,51 +35,51 @@ _logger = logging.getLogger(__name__)
 class Followers(models.Model):
     _inherit = 'mail.followers'
 
-    def _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
-                          customer_ids=None, check_existing=True, existing_policy='skip'):
-        """ Main internal method allowing to create or update followers for documents, given a
-        res_model and the document res_ids. This method does not handle access rights. This is the
-        role of the caller to ensure there is no security breach.
+    # def _insert_followers(self, res_model, res_ids, partner_ids, partner_subtypes, channel_ids, channel_subtypes,
+    #                       customer_ids=None, check_existing=True, existing_policy='skip'):
+    #     """ Main internal method allowing to create or update followers for documents, given a
+    #     res_model and the document res_ids. This method does not handle access rights. This is the
+    #     role of the caller to ensure there is no security breach.
 
-        :param partner_subtypes: optional subtypes for new partner followers. If not given, default
-         ones are computed;
-        :param channel_subtypes: optional subtypes for new channel followers. If not given, default
-         ones are computed;
-        :param customer_ids: see ``_add_default_followers``
-        :param check_existing: see ``_add_followers``;
-        :param existing_policy: see ``_add_followers``;
-        """
-        _logger.info("\n############# _insert_followers >>>>>>> ")
-        context = self._context
-        _logger.info("\n::::::::: context %s" % context)
+    #     :param partner_subtypes: optional subtypes for new partner followers. If not given, default
+    #      ones are computed;
+    #     :param channel_subtypes: optional subtypes for new channel followers. If not given, default
+    #      ones are computed;
+    #     :param customer_ids: see ``_add_default_followers``
+    #     :param check_existing: see ``_add_followers``;
+    #     :param existing_policy: see ``_add_followers``;
+    #     """
+    #     _logger.info("\n############# _insert_followers >>>>>>> ")
+    #     context = self._context
+    #     _logger.info("\n::::::::: context %s" % context)
         
-        if self._context.get('mail_post_autofollow', False):
-            return False
+    #     if self._context.get('mail_post_autofollow', False):
+    #         return False
 
-        sudo_self = self.sudo().with_context(default_partner_id=False, default_channel_id=False)
-        if not partner_subtypes and not channel_subtypes:  # no subtypes -> default computation, no force, skip existing
-            new, upd = self._add_default_followers(
-                res_model, res_ids,
-                partner_ids, channel_ids,
-                customer_ids=customer_ids,
-                check_existing=check_existing,
-                existing_policy=existing_policy)
-        else:
-            new, upd = self._add_followers(
-                res_model, res_ids,
-                partner_ids, partner_subtypes,
-                channel_ids, channel_subtypes,
-                check_existing=check_existing,
-                existing_policy=existing_policy)
-        if new:
-            sudo_self.create([
-                dict(values, res_id=res_id)
-                for res_id, values_list in new.items()
-                for values in values_list
-            ])
-        if upd:
-            for fol_id, values in upd.items():
-                sudo_self.browse(fol_id).write(values)
+    #     sudo_self = self.sudo().with_context(default_partner_id=False, default_channel_id=False)
+    #     if not partner_subtypes and not channel_subtypes:  # no subtypes -> default computation, no force, skip existing
+    #         new, upd = self._add_default_followers(
+    #             res_model, res_ids,
+    #             partner_ids, channel_ids,
+    #             customer_ids=customer_ids,
+    #             check_existing=check_existing,
+    #             existing_policy=existing_policy)
+    #     else:
+    #         new, upd = self._add_followers(
+    #             res_model, res_ids,
+    #             partner_ids, partner_subtypes,
+    #             channel_ids, channel_subtypes,
+    #             check_existing=check_existing,
+    #             existing_policy=existing_policy)
+    #     if new:
+    #         sudo_self.create([
+    #             dict(values, res_id=res_id)
+    #             for res_id, values_list in new.items()
+    #             for values in values_list
+    #         ])
+    #     if upd:
+    #         for fol_id, values in upd.items():
+    #             sudo_self.browse(fol_id).write(values)
 
     # @api.model_create_multi
     # def create(self, values_list):
