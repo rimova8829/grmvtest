@@ -172,13 +172,15 @@ class WizardStowageLabels(models.TransientModel):
             else:
                 qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
                 qa_initials = '.'.join(qa_initials)
-                    
-            storage_location = picking_id.move_line_ids_without_package\
-                .mapped('product_id.putaway_rule_ids')
-            if not len(storage_location):
-                storage_location = picking_id.location_dest_id.display_name
-            else:
-                storage_location = storage_location[0].location_out_id.display_name
+            
+            storage_location = "ALM/Existencias"
+                  
+            # storage_location = picking_id.move_line_ids_without_package\
+            #     .mapped('product_id.putaway_rule_ids')
+            # if not len(storage_location):
+            #     storage_location = picking_id.location_dest_id.display_name
+            # else:
+            #     storage_location = storage_location[0].location_out_id.display_name
             
             pick_date = picking_id.date_done.strftime('%d/%m/%Y')
             
@@ -238,12 +240,14 @@ class WizardStowageLabels(models.TransientModel):
             qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
             qa_initials = '.'.join(qa_initials)
 
-        storage_location = picking_id.move_line_ids_without_package\
-            .mapped('product_id.putaway_rule_ids')
-        if not len(storage_location):
-            storage_location = picking_id.location_dest_id.display_name
-        else:
-            storage_location = storage_location[0].location_out_id.display_name
+        storage_location = "ALM/Existencias"
+
+        # storage_location = picking_id.move_line_ids_without_package\
+        #     .mapped('product_id.putaway_rule_ids')
+        # if not len(storage_location):
+        #     storage_location = picking_id.location_dest_id.display_name
+        # else:
+        #     storage_location = storage_location[0].location_out_id.display_name
 
         lines = []
         list_records = []
@@ -423,7 +427,7 @@ class WizardStowageLabels(models.TransientModel):
                 if qty_limit > total_qty:
                     raise UserError("La cantidad limite %s es superior a la del Picking %s." % (qty_limit, total_qty))
                 total_qty = qty_limit
-                    
+
             lines = []
             list_records = []
             sublist = []
