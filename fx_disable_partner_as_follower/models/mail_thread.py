@@ -140,9 +140,9 @@ class MailThread(models.AbstractModel):
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    def send_mail(self, auto_commit=False):
-        _logger.info("\n############# send_mail >>>>>>> ")
-        context = self._context
-        _logger.info("\n::::::::: context %s" % context)
-        res = super(MailComposer, self.with_context(mail_post_autofollow=True)).send_mail(auto_commit=auto_commit)
-        return res
+    # def send_mail(self, auto_commit=False):
+    #     _logger.info("\n############# send_mail >>>>>>> ")
+    #     context = self._context
+    #     _logger.info("\n::::::::: context %s" % context)
+    #     res = super(MailComposer, self.with_context(mail_post_autofollow=True)).send_mail(auto_commit=auto_commit)
+    #     return res
