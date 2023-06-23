@@ -42,6 +42,8 @@ class WizardStowageLabels(models.TransientModel):
     reports_file_ok = fields.Boolean('Archivos Listos')
     report_file_ids = fields.One2many('wizard.stowage.labels.file', 'wizard_id', 'Archivos')
 
+    qty_limit = fields.Integer('Cantidad Limite')
+
     def generate_labels_adjunts(self, list_records, report_name, picking_id):
         xbinary_lines = []
         attachment_obj = self.env['ir.attachment'].sudo()
@@ -354,6 +356,11 @@ class WizardStowageLabels(models.TransientModel):
                 lot_names = lot.name
 
                 total_qty = int(lots_dict[lot])
+                qty_limit = self.qty_limit
+                if qty_limit > 0.0:
+                    if qty_limit > total_qty:
+                        raise UserError("La cantidad limite %s es superior a la del Picking %s." % (qty_limit, total_qty))
+                    total_qty = qty_limit
                 # total_qty = int(dict_products_qty[list_products[0]])
                 
                 for idx in range(1, total_qty + 1):

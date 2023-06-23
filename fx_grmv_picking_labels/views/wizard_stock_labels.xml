@@ -25,6 +25,8 @@
                                 }"/>
                             <field name="require_platform2_qty" invisible="1"/>
                             <field name="split_labels" />
+                            <field name="qty_limit" attrs="{
+                                    'invisible' : [('label_type', '!=', 'single')]}"/>
                         </group>
                         <group/>
                     </group>
