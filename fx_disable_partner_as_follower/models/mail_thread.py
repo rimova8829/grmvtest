@@ -125,17 +125,17 @@ class MailThread(models.AbstractModel):
     _inherit = 'mail.thread'
     _description = 'Email Thread'
 
-    def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
-        _logger.info("\n############# message_subscribe >>>>>>> ")
-        context = self._context
-        _logger.info("\n::::::::: context %s" % context)
-        # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'default_res_model': 'sale.order', 'default_res_id': 6, 'mail_invite_follower_channel_only': False}
-        # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'mail_post_autofollow': True}
-        if self._context.get('mail_post_autofollow', False):
-            return False
-        else:
-            res = super(MailThread, self).message_subscribe(partner_ids, channel_ids, subtype_ids)
-            return res
+    # def message_subscribe(self, partner_ids=None, channel_ids=None, subtype_ids=None):
+    #     _logger.info("\n############# message_subscribe >>>>>>> ")
+    #     context = self._context
+    #     _logger.info("\n::::::::: context %s" % context)
+    #     # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'default_res_model': 'sale.order', 'default_res_id': 6, 'mail_invite_follower_channel_only': False}
+    #     # context:  {'lang': 'es_MX', 'tz': 'America/Mexico_City', 'uid': 2, 'allowed_company_ids': [1], 'mail_post_autofollow': True}
+    #     if self._context.get('mail_post_autofollow', False):
+    #         return False
+    #     else:
+    #         res = super(MailThread, self).message_subscribe(partner_ids, channel_ids, subtype_ids)
+    #         return res
 
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
