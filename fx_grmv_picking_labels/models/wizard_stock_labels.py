@@ -133,92 +133,118 @@ class WizardStowageLabels(models.TransientModel):
         #total_qty = sum(picking_id.move_line_ids_without_package.mapped('qty_done'))
         list_products = []
         dict_products_qty = {}
+        dict_products_lots = {}
+        dict_products_qty_by_lot = {}
+
         for line in picking_id.move_line_ids_without_package:
+            if line.lot_id:
+                if line.product_id.id not in dict_products_qty_by_lot:
+                    dict_products_qty_by_lot[line.product_id.id] = {'lot_ids':{
+                                                                                line.lot_id: line.qty_done
+                                                                              }}
+                else:
+                    prev_lot_ids = dict_products_qty_by_lot[line.product_id.id]['lot_ids']
+                    if line.lot_id in prev_lot_ids:
+                        prev_lot_qty = prev_lot_ids[line.lot_id]
+                        new_lot_qty = prev_lot_qty + line.qty_done
+                        dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line.lot_id] = new_lot_qty
+                    else:
+                        dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line.lot_id] = line.qty_done
+
+
             if line.product_id.id not in list_products:
                 list_products.append(line.product_id.id)
                 dict_products_qty[line.product_id.id] = line.qty_done
+                if line.lot_id:
+                    dict_products_lots[line.product_id.id] = line.lot_id.name
+                if line.product_id.putaway_rule_ids:
+                    dict_products_putaway_rules[line.product_id.id] = line.product_id.putaway_rule_ids
             else:
                 line_pev_qty = dict_products_qty[line.product_id.id] 
                 line_new_qty = line_pev_qty + line.qty_done
                 dict_products_qty[line.product_id.id] = line_new_qty
+                if line.product_id.id in dict_products_lots:
+                    prev_lot = dict_products_lots[line.product_id.id] 
+                    if line.lot_id:
+                        new_lot = prev_lot  +  line.lot_id.name
+
+        qa_initials = picking_id.check_ids.mapped('user_id.name')
+        if not len(qa_initials):
+            qa_initials = ''
+        else:
+            qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
+            qa_initials = '.'.join(qa_initials)
+        
+        storage_location = "ALM/Existencias"
+
         product_c = 1
         list_records = []
         lines = []
         sublist = []
         count_l = 0
         for product in list_products:
-            total_qty = int(dict_products_qty[product])
-            p_platform_qty = self.platform_qty
-            if product_c > 1:
-                p_platform_qty = self.platform2_qty
-            if p_platform_qty > total_qty:
-                raise UserError(
-                    'Indique una cantidad menor o igual al total de piezas del traslado'
-                )
-
-            pages_qty = int(total_qty / p_platform_qty)
-            pages_qty_module = total_qty % p_platform_qty
-            if pages_qty_module != 0:
-                pages_qty += 1 # agregar una etiqueta para piezas residuales
-
-            # valores para las etiquetas
-            lot_names = ','.join(
-                picking_id.move_line_ids_without_package.mapped('lot_id.display_name')
-            )
-
-            qa_initials = picking_id.check_ids.mapped('user_id.name')
-            if not len(qa_initials):
-                qa_initials = ''
-            else:
-                qa_initials = map(lambda p: p[0], qa_initials[0].split(' '))
-                qa_initials = '.'.join(qa_initials)
-            
-            storage_location = "ALM/Existencias"
-                  
-            # storage_location = picking_id.move_line_ids_without_package\
-            #     .mapped('product_id.putaway_rule_ids')
-            # if not len(storage_location):
-            #     storage_location = picking_id.location_dest_id.display_name
-            # else:
-            #     storage_location = storage_location[0].location_out_id.display_name
-            
-            pick_date = picking_id.date_done.strftime('%d/%m/%Y')
-            
             product_br = self.env['product.product'].browse(product)
             product_name = product_br.display_name
-            
-            label_qty = total_qty
+            storage_location =  product_br.putaway_rule_ids
+            lots_dict = dict_products_qty_by_lot[product]['lot_ids']
+            for lot in lots_dict.keys():
+                total_qty = int(lots_dict[lot])
+                lot_names = lot.name
+                p_platform_qty = self.platform_qty
+                if product_c > 1:
+                    p_platform_qty = self.platform2_qty
+                if p_platform_qty > total_qty:
+                    raise UserError(
+                        'Indique una cantidad menor o igual al total de piezas del traslado'
+                    )
 
-            for idx in range(1, pages_qty + 1):
-                label_qty = p_platform_qty
-                # cantidad disponible disminuye con cada etiqueta
-                if pages_qty_module != 0 and idx == pages_qty:
-                    # la etiqueta residual contiene menos piezas que las demas
-                    label_qty = total_qty - (p_platform_qty * (idx - 1))
-                xvals = {
-                    'pn' : product_name,
-                    'mo' : picking_id.origin,
-                    'qty' : f'{label_qty} de {total_qty}',
-                    'lot' : lot_names,#'LOTE',
-                    'qa' : qa_initials,#'INICIALES',
-                    'location_dest' : storage_location,#'ALMACENAMIENTO',
-                    'mo_date' : label_date.strftime('%d/%m/%Y'),#'FECHA MO',
-                    'pick_date' : pick_date,
-                    'count' : f'{idx} de {pages_qty}'
-                }
-                lines.append(xvals)
-                if count_l < 500:
-                    sublist.append(xvals)
-                    count_l += 1
-                else:
-                    list_records.append(sublist)
-                    sublist = [xvals]
-                    count_l = 1
+                pages_qty = int(total_qty / p_platform_qty)
+                pages_qty_module = total_qty % p_platform_qty
+                if pages_qty_module != 0:
+                    pages_qty += 1 # agregar una etiqueta para piezas residuales
+
+                                  
+                # storage_location = picking_id.move_line_ids_without_package\
+                #     .mapped('product_id.putaway_rule_ids')
+                # if not len(storage_location):
+                #     storage_location = picking_id.location_dest_id.display_name
+                # else:
+                #     storage_location = storage_location[0].location_out_id.display_name
+                
+                pick_date = picking_id.date_done.strftime('%d/%m/%Y')
+                                
                 label_qty = total_qty
 
-            if sublist and sublist not in list_records:
-                list_records.append(sublist)
-            product_c += 1
+                for idx in range(1, pages_qty + 1):
+                    label_qty = p_platform_qty
+                    # cantidad disponible disminuye con cada etiqueta
+                    if pages_qty_module != 0 and idx == pages_qty:
+                        # la etiqueta residual contiene menos piezas que las demas
+                        label_qty = total_qty - (p_platform_qty * (idx - 1))
+                    xvals = {
+                        'pn' : product_name,
+                        'mo' : picking_id.origin,
+                        'qty' : f'{label_qty} de {total_qty}',
+                        'lot' : lot_names,#'LOTE',
+                        'qa' : qa_initials,#'INICIALES',
+                        'location_dest' : storage_location,#'ALMACENAMIENTO',
+                        'mo_date' : label_date.strftime('%d/%m/%Y'),#'FECHA MO',
+                        'pick_date' : pick_date,
+                        'count' : f'{idx} de {pages_qty}'
+                    }
+                    lines.append(xvals)
+                    if count_l < 500:
+                        sublist.append(xvals)
+                        count_l += 1
+                    else:
+                        list_records.append(sublist)
+                        sublist = [xvals]
+                        count_l = 1
+                    label_qty = total_qty
+
+                if sublist and sublist not in list_records:
+                    list_records.append(sublist)
+                product_c += 1
 
         picking_id.stowage_labels_printed = True
 
