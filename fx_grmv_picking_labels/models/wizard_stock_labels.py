@@ -157,8 +157,6 @@ class WizardStowageLabels(models.TransientModel):
                 dict_products_qty[line.product_id.id] = line.qty_done
                 if line.lot_id:
                     dict_products_lots[line.product_id.id] = line.lot_id.name
-                if line.product_id.putaway_rule_ids:
-                    dict_products_putaway_rules[line.product_id.id] = line.product_id.putaway_rule_ids
             else:
                 line_pev_qty = dict_products_qty[line.product_id.id] 
                 line_new_qty = line_pev_qty + line.qty_done
@@ -294,8 +292,6 @@ class WizardStowageLabels(models.TransientModel):
                 dict_products_qty[line.product_id.id] = line.qty_done
                 if line.lot_id:
                     dict_products_lots[line.product_id.id] = line.lot_id.name
-                if line.product_id.putaway_rule_ids:
-                    dict_products_putaway_rules[line.product_id.id] = line.product_id.putaway_rule_ids
             else:
                 line_pev_qty = dict_products_qty[line.product_id.id] 
                 line_new_qty = line_pev_qty + line.qty_done
@@ -413,8 +409,6 @@ class WizardStowageLabels(models.TransientModel):
                 dict_products_qty[line.product_id.id] = line.qty_done
                 if line.lot_id:
                     dict_products_lots[line.product_id.id] = line.lot_id.name
-                if line.product_id.putaway_rule_ids:
-                    dict_products_putaway_rules[line.product_id.id] = line.product_id.putaway_rule_ids
             else:
                 line_pev_qty = dict_products_qty[line.product_id.id] 
                 line_new_qty = line_pev_qty + line.qty_done
