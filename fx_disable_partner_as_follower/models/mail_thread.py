@@ -102,16 +102,19 @@ class Followers(models.Model):
         _logger.info("\n############# _add_default_followers >>>>>>> ")
         context = self._context
         _logger.info("\n::::::::: context %s" % context)
-
-        # if 'active_model' in context or 'default_res_model' in context or 'mail_invite_follower_channel_only' in context:
-        #     if self._context.get('mail_post_autofollow', False):
-        #         return False, False
-        #     else:
-        #         res = super(Followers, self)._add_default_followers(res_model, res_ids, partner_ids, channel_ids=channel_ids, customer_ids=customer_ids,
-        #                            check_existing=check_existing, existing_policy=existing_policy)
-        #         return res
-        # else:
-        #     return False, False
+        if 'isMobile' in context:
+            res = super(Followers, self)._add_default_followers(res_model, res_ids, partner_ids, channel_ids=channel_ids, customer_ids=customer_ids,
+                               check_existing=check_existing, existing_policy=existing_policy)
+            return res
+        if 'active_model' in context or 'default_res_model' in context or 'mail_invite_follower_channel_only' in context:
+            if self._context.get('mail_post_autofollow', False):
+                return False, False
+            else:
+                res = super(Followers, self)._add_default_followers(res_model, res_ids, partner_ids, channel_ids=channel_ids, customer_ids=customer_ids,
+                                   check_existing=check_existing, existing_policy=existing_policy)
+                return res
+        else:
+            return False, False
 
         if self._context.get('mail_post_autofollow', False):
             return False, False
