@@ -192,7 +192,7 @@ class WizardStowageLabels(models.TransientModel):
             lots_dict = dict_products_qty_by_lot[product]['lot_ids']
             for lot in lots_dict.keys():
                 total_qty = int(lots_dict[lot])
-                lot_names = lot.name
+                lot_names = lot.name if lot != 0 else "NA"
                 p_platform_qty = self.platform_qty
                 if product_c > 1:
                     p_platform_qty = self.platform2_qty
@@ -330,7 +330,7 @@ class WizardStowageLabels(models.TransientModel):
                 lots_dict = dict_products_qty_by_lot[product]['lot_ids']
                 for lot in lots_dict.keys():
                     total_qty = int(lots_dict[lot])
-                    lot_names = lot.name
+                    lot_names = lot.name if lot != 0 else "NA"
                     xvals = {
                         'pn' : product_name,
                         'mo' : picking_id.origin,
