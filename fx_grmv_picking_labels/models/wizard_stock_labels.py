@@ -272,26 +272,31 @@ class WizardStowageLabels(models.TransientModel):
         dict_products_qty_by_lot = {}
 
         for line in picking_id.move_line_ids_without_package:
+            line_lot_id = 0
+            line_lot_name = "NA"
             if line.lot_id:
-                if line.product_id.id not in dict_products_qty_by_lot:
-                    dict_products_qty_by_lot[line.product_id.id] = {'lot_ids':{
-                                                                                line.lot_id: line.qty_done
-                                                                              }}
+                line_lot_id = line.lot_id
+                line_lot_name = line.lot_id.name
+            if line.product_id.id not in dict_products_qty_by_lot:
+                dict_products_qty_by_lot[line.product_id.id] = {'lot_ids':{
+                                                                            line_lot_id: line.qty_done
+                                                                          }}
+            else:
+                prev_lot_ids = dict_products_qty_by_lot[line.product_id.id]['lot_ids']
+                if line_lot_id in prev_lot_ids:
+                    prev_lot_qty = prev_lot_ids[line_lot_id]
+                    new_lot_qty = prev_lot_qty + line.qty_done
+                    dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line_lot_id] = new_lot_qty
                 else:
-                    prev_lot_ids = dict_products_qty_by_lot[line.product_id.id]['lot_ids']
-                    if line.lot_id in prev_lot_ids:
-                        prev_lot_qty = prev_lot_ids[line.lot_id]
-                        new_lot_qty = prev_lot_qty + line.qty_done
-                        dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line.lot_id] = new_lot_qty
-                    else:
-                        dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line.lot_id] = line.qty_done
-
+                    dict_products_qty_by_lot[line.product_id.id]['lot_ids'][line_lot_id] = line.qty_done
 
             if line.product_id.id not in list_products:
                 list_products.append(line.product_id.id)
                 dict_products_qty[line.product_id.id] = line.qty_done
                 if line.lot_id:
                     dict_products_lots[line.product_id.id] = line.lot_id.name
+                else:
+                    dict_products_lots[line.product_id.id] = line_lot_name
             else:
                 line_pev_qty = dict_products_qty[line.product_id.id] 
                 line_new_qty = line_pev_qty + line.qty_done
@@ -300,6 +305,8 @@ class WizardStowageLabels(models.TransientModel):
                     prev_lot = dict_products_lots[line.product_id.id] 
                     if line.lot_id:
                         new_lot = prev_lot  +  line.lot_id.name
+                    else:
+                        new_lot = line_lot_name
 
         if dict_products_qty_by_lot:
             lines = []
