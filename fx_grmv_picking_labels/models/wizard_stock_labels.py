@@ -188,7 +188,6 @@ class WizardStowageLabels(models.TransientModel):
         for product in list_products:
             product_br = self.env['product.product'].browse(product)
             product_name = product_br.display_name
-            storage_location =  product_br.putaway_rule_ids
             lots_dict = dict_products_qty_by_lot[product]['lot_ids']
             for lot in lots_dict.keys():
                 total_qty = int(lots_dict[lot])
