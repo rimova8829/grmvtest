@@ -3,6 +3,9 @@ from odoo import fields, models, api
 from odoo.exceptions import UserError
 import base64
 
+import logging
+_logger = logging.getLogger(__name__)
+
 class WizardStowageLabelsFile(models.TransientModel):
     _name = 'wizard.stowage.labels.file'
 
@@ -205,13 +208,11 @@ class WizardStowageLabels(models.TransientModel):
                 if pages_qty_module != 0:
                     pages_qty += 1 # agregar una etiqueta para piezas residuales
 
-                                  
-                # storage_location = picking_id.move_line_ids_without_package\
-                #     .mapped('product_id.putaway_rule_ids')
-                # if not len(storage_location):
-                #     storage_location = picking_id.location_dest_id.display_name
-                # else:
-                #     storage_location = storage_location[0].location_out_id.display_name
+                storage_location = picking_id.move_line_ids_without_package\
+                    .mapped('product_id.putaway_rule_ids')
+                _logger.info("\n############ storage_location: %s" % storage_location)
+                if storage_location:
+                    storage_location = storage_location[0].location_out_id.display_name
                 
                 pick_date = picking_id.date_done.strftime('%d/%m/%Y')
                                 
