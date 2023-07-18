@@ -208,7 +208,6 @@ class WizardStowageLabels(models.TransientModel):
                 if pages_qty_module != 0:
                     pages_qty += 1 # agregar una etiqueta para piezas residuales
 
-                if product_br. 
                 storage_location = picking_id.move_line_ids_without_package\
                     .mapped('product_id.putaway_rule_ids')
                 _logger.info("\n############ storage_location: %s" % storage_location)
