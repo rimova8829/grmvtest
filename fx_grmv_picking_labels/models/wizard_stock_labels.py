@@ -6,6 +6,8 @@ import base64
 import logging
 _logger = logging.getLogger(__name__)
 
+MAX_NUMBER_OF_PAGES = 200
+
 class WizardStowageLabelsFile(models.TransientModel):
     _name = 'wizard.stowage.labels.file'
 
@@ -240,7 +242,7 @@ class WizardStowageLabels(models.TransientModel):
                         'count' : f'{idx} de {pages_qty}'
                     }
                     lines.append(xvals)
-                    if count_l < 500:
+                    if count_l < MAX_NUMBER_OF_PAGES:
                         sublist.append(xvals)
                         count_l += 1
                     else:
@@ -344,7 +346,7 @@ class WizardStowageLabels(models.TransientModel):
                         'location_dest' :  storage_location
                     }
                     lines.append(xvals)
-                    if count_l < 500:
+                    if count_l < MAX_NUMBER_OF_PAGES:
                         sublist.append(xvals)
                         count_l += 1
                     else:
@@ -376,7 +378,7 @@ class WizardStowageLabels(models.TransientModel):
                     'location_dest' :  storage_location
                 }
                 lines.append(xvals)
-                if count_l < 500:
+                if count_l < MAX_NUMBER_OF_PAGES:
                     sublist.append(xvals)
                     count_l += 1
                 else:
@@ -494,7 +496,7 @@ class WizardStowageLabels(models.TransientModel):
                                 'count' : f'{idx} de {total_qty}'
                             }
                     lines.append(xvals)
-                    if count_l < 500:
+                    if count_l < MAX_NUMBER_OF_PAGES:
                         sublist.append(xvals)
                         count_l += 1
                     else:
@@ -559,7 +561,7 @@ class WizardStowageLabels(models.TransientModel):
                             'count' : f'{idx} de {total_qty}'
                         }
                 lines.append(xvals)
-                if count_l < 500:
+                if count_l < MAX_NUMBER_OF_PAGES:
                     sublist.append(xvals)
                     count_l += 1
                 else:
