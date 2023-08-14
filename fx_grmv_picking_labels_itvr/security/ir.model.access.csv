@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_wizard_labels,access.wizard.labels,model_wizard_stowage_labels,base.group_user,1,1,1,1
+access_wizard_stowage_labels_file,wizard.stowage.labels.file,model_wizard_stowage_labels_file,base.group_user,1,1,1,1

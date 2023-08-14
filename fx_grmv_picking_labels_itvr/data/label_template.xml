@@ -1,0 +1,107 @@
+<odoo>
+
+    <template id="qa_picking_label_template">
+        <t t-call="web.html_container">
+          <t t-set="data_report_margin_top" t-value="8"/>
+          <t t-set="data_report_header_spacing" t-value="1"/>
+            <t t-foreach="lines" t-as="line">
+              <div class="page">
+                    <table style="width: 102mm; height: 152mm; text-align:left; border: 1px solid black; padding-left: 0px">
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>P/N:</span>
+                                <span t-esc="line['pn']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>PO:</span>
+                                <span t-esc="line['mo']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>Cantidad:</span>
+                                <span t-esc="line['qty']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>Lote:</span>
+                                <span t-esc="line['lot']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>Liberado por:</span>
+                                <span t-esc="line['qa']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>Ubicación:</span>
+                                <span t-esc="line['location_dest']"/>
+                              </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                              <div class="row">
+                                <span>Conteo:</span>
+                                <span>1 de 1</span>
+                              </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <p style="page-break-before:always;"> </p>
+                </div>
+            </t>    
+        </t>
+    </template>
+
+    <!-- <report id="qa_stock_label"
+        model="stock.picking"
+        string="Etiqueta de calidad"
+        report_type="qweb-pdf"
+        name="fx_grmv_picking_labels.qa_picking_label_template"
+        file="fx_grmv_picking_labels.qa_picking_label_template"/> -->
+
+      <record id="paperformat_quality_grmv_picking_labels" model="report.paperformat">
+          <field name="name">Etiquetas Calidad GRMV</field>
+          <field name="format">custom</field>
+          <field name="page_height">100</field>
+          <field name="page_width">160</field>
+          <field name="orientation">Landscape</field>
+          <field name="margin_top">2</field>
+          <field name="margin_bottom">2</field>
+          <field name="margin_left">2</field>
+          <field name="margin_right">2</field>
+          <field name="header_spacing">10</field>
+          <field name="dpi">80</field>
+      </record>
+
+
+    <record id="qa_stock_label" model="ir.actions.report">
+        <field name="name">Etiqueta de calidad</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">fx_grmv_picking_labels.qa_picking_label_template</field>
+        <field name="report_file">fx_grmv_picking_labels.qa_picking_label_template</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_quality_grmv_picking_labels" />
+    </record>
+        
+
+</odoo>
