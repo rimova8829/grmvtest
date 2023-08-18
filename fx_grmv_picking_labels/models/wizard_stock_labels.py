@@ -409,6 +409,9 @@ class WizardStowageLabels(models.TransientModel):
         for line in picking_id.move_line_ids_without_package:
             line_lot_id = 0
             line_lot_name = "NA"
+            if line.lot_id:
+                line_lot_id = line.lot_id.id
+                line_lot_name = line.lot_id.name
             if line.product_id.id not in dict_products_qty_by_lot:
                 dict_products_qty_by_lot[line.product_id.id] = {'lot_ids':{
                                                                             line_lot_id: line.qty_done
