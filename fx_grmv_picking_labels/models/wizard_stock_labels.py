@@ -465,12 +465,14 @@ class WizardStowageLabels(models.TransientModel):
             date_finished = mrp_prod_id[0].date_finished
             mo_date = date_finished.strftime('%d/%m/%Y') if date_finished else ""
             
-            storage_location = "ALM/Existencias"
-
-            # if not len(storage_location):
-            #     storage_location = picking_id.location_dest_id.display_name
-            # else:
-            #     storage_location = storage_location[0].location_out_id.display_name
+            storage_location = picking_id.move_line_ids_without_package\
+                .mapped('product_id.putaway_rule_ids')
+            _logger.info("\n############ storage_location: %s" % storage_location)
+            if storage_location:
+                storage_location = storage_location[0].location_out_id.display_name
+            else:
+                storage_location = "ALM/Existencias"
+                
             lines = []
             list_records = []
             sublist = []
@@ -533,12 +535,13 @@ class WizardStowageLabels(models.TransientModel):
             # storage_location = picking_id.move_line_ids_without_package\
             #     .mapped('product_id.putaway_rule_ids')
 
-            storage_location = "ALM/Existencias"
-
-            if not len(storage_location):
-                storage_location = picking_id.location_dest_id.display_name
-            else:
+            storage_location = picking_id.move_line_ids_without_package\
+                .mapped('product_id.putaway_rule_ids')
+            _logger.info("\n############ storage_location: %s" % storage_location)
+            if storage_location:
                 storage_location = storage_location[0].location_out_id.display_name
+            else:
+                storage_location = "ALM/Existencias"
             
             product_br = self.env['product.product'].browse(list_products[0])
             product_name = product_br.display_name
