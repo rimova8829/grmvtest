@@ -16,7 +16,12 @@
                             <span>Cantidad:</span> <span t-esc="1"/><br/>
                             <span>Lote:</span> <span t-esc="line['lot']"/><br/>
                             <span>Liberado por:</span> <span t-esc="line['qa']"/><br/>
-                            <span>Ubicación destino:</span> <span t-esc="line['storage_location']"/><br/>
+                            <div t-if="len(line['storage_location']) &lt;= 15">
+                              <span>Ubicación destino:</span> <span t-esc="line['storage_location']"/><br/>
+                            </div>
+                            <div t-else="">
+                              <span>Ubicación destino:</span> <span style="font-size:6.5px;" t-esc="line['storage_location']"/><br/>
+                            </div>
                             <span>Fecha fabricación:</span> <span t-esc="line['mo_date']"/><br/>
                             <span>Conteo:</span> <span t-esc="line['count']"/><br/>
                           </div>
