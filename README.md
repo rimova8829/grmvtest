@@ -75,4 +75,4 @@ Protedigo contra Pirateria bajo la Ley de Protección de Derechos de Autor de M�
 
 ## Release NOTES:
 
-* **Ultimo Commit - 27/04/2023** - *Commit 7aed3aa1ea1dea0fd494eafc3859d092eb1e82b7* - [Versión Desarrollada Odoo 15.0](https://github.com/sistemasmitzu/mitzu_custom_odoo/commit/7aed3aa1ea1dea0fd494eafc3859d092eb1e82b7) para mas detalles.
+* **Ultimo Commit - 27/04/2023** - *Commit 7aed3aa1ea1dea0fd494eafc3859d092eb1e82b7* - [Versión Desarrollada Odoo 14.0](https://github.com/sistemasmitzu/mitzu_custom_odoo/commit/7aed3aa1ea1dea0fd494eafc3859d092eb1e82b7) para mas detalles.
