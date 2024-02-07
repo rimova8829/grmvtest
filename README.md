@@ -71,7 +71,7 @@ Add additional notes about how to deploy this on a live system
 
 ## License
 
-Protedigo contra Pirateria bajo la Ley de Protección de Derechos de Autor de México  [Mas información](https://mexico.justia.com/federales/leyes/ley-federal-del-derecho-de-autor/titulo-ii/capitulo-i/) para mas detalles.
+Protedigo contra Pirateria bajo la Ley de Protección de Derechos de Autor de México  [Mas información](https://mexico.justia.com/federales/leyes/ley-federal-del-derecho-de-autor/titulo-ii/capitulo-i/) para mas detalles
 
 ## Release NOTES:
 
