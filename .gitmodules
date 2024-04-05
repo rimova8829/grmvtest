@@ -1,4 +1,4 @@
 [submodule "addons-payroll_submodule"]
 	path = addons-payroll_submodule
 	url = git@github.com:telematel/addons-nomina.git
-	branch = 14.0
+	branch = 14.0-RIMOVA
