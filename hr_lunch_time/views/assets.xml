@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+
+        <template id="assets_hr_lunch_time" name="hr_lunch_time assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/hr_lunch_time/static/src/js/kiosk_face_recognition.js"/>
+                <script type="text/javascript" src="/hr_lunch_time/static/src/js/kiosk_mode.js"/>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
